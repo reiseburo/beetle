@@ -1,0 +1,20 @@
+= Beetle
+
+Beetle is a somewhat higher level Java API on top of the client libraries
+distributed distributed with link:http://kafka.apache.org[Apache Kafka]. The
+goal of this library is not to replace the use of those libraries, but to wrap
+the library in a more easy to use package.
+
+
+== System Requirements
+
+* JDK7 or later
+
+
+== Hacking
+
+This project uses link:http://gradle.org[Gradle] so building and testing should
+be as easy as executing:
+
+    % ./gradlew
+
