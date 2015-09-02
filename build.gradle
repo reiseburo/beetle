@@ -4,23 +4,23 @@ buildscript {
     }
 }
 
+apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'findbugs'
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'pmd'
-
 
 version '0.1.0'
 group 'com.github.reiseburo'
 description 'A sane API on top of Kafka'
+defaultTasks 'check', 'assemble'
 
-repository {
+repositories {
     jcenter()
 }
 
 dependencies {
     compile 'org.apache.curator:curator-framework:[2.7.1,2.8)'
+    compile 'io.reactivex:rxjava:[1.0.14,2.0)'
 
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
     testCompile 'cglib:cglib-nodep:3.1'
