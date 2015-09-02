@@ -32,3 +32,13 @@ idea {
         downloadSources = true
     }
 }
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+assemble.dependsOn check
+install.dependsOn assemble
