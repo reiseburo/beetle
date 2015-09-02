@@ -5,6 +5,8 @@ package com.github.reiseburo.beetle;
  */
 public class Broker {
     private String host;
+
+    private String brokerId;
     private int port;
     private int jmxPort;
 
@@ -20,10 +22,15 @@ public class Broker {
         return jmxPort;
     }
 
+    public String getBrokerId() {
+        return brokerId;
+    }
+
     public static class Builder {
         private int port;
         private int jmxPort;
         private String host;
+        private String brokerId;
 
         public Builder withHost(String hostName) {
             this.host = hostName;
@@ -40,6 +47,11 @@ public class Broker {
             return this;
         }
 
+        public Builder withBrokerId(String id) {
+            this.brokerId = id;
+            return this;
+        }
+
         public Broker build() {
             return new Broker(this);
         }
@@ -50,8 +62,14 @@ public class Broker {
     }
 
     private Broker(Builder builder) {
+        this.brokerId = builder.brokerId;
         this.host = builder.host;
         this.port = builder.port;
         this.jmxPort = builder.jmxPort;
+    }
+
+    public String toString() {
+        return String.format("<Broker:%d (%s %s:%d [jmx:%d])>",
+                hashCode(), brokerId, host, port, jmxPort);
     }
 }

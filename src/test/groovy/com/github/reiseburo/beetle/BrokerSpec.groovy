@@ -48,4 +48,16 @@ class BrokerBuilderSpec extends Specification {
         then:
         broker.jmxPort == port
     }
+
+    def "withBrokerId()"() {
+        given:
+        final String brokerId = 'roflcopter'
+        Broker broker
+
+        when:
+        broker = Broker.builder().withBrokerId(brokerId).build()
+
+        then:
+        broker.brokerId == brokerId
+    }
 }
