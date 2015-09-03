@@ -43,8 +43,9 @@ Subscribers, e.g.g
 [source, java]
 ----
 /* Using Java 8 Lambda syntax for conciseness' sake */
-BrokerDiscovery.zookeeper("localhost:2181")
+LocateBrokers.zookeeper("localhost:2181")
     .map(broker -> TopicSubscription("some-topic"))
-    .map(message -> doSomethingWithMessage(message); message)
+    /* assuming a custom consume() operator exists in Beetle */
+    .consume(message -> doSomethingWithMessage(message))
     .map(message -> message.commitOffset());
 ----
