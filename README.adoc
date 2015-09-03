@@ -49,3 +49,9 @@ LocateBrokers.zookeeper("localhost:2181")
     .consume(message -> doSomethingWithMessage(message))
     .map(message -> message.commitOffset());
 ----
+
+
+== Similar Projects
+
+. link:https://github.com/cjdev/kafka-rx[kafka-rx]: Scala-based client which
+ provides a push alternative to kafka's pull-based stream

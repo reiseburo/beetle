@@ -1,0 +1,79 @@
+= Hacking Notes
+
+
+== Kafka's Zookeeper tree layout
+
+These are some notes for posterity about where to expect what kinds of data as
+it's laid out in Zookeeper by Kafka (0.8.x)
+
+=== Brokers metadata
+
+Each broker has a node stored in `/brokers/ids/[\d+]`. That node (e.g.
+`/brokers/ids/12345`) has JSON data, approximately matching this:
+
+[source,json]
+----
+{"jmx_port":9999,
+ "timestamp":"1428168559585",
+ "host":"kafka-1.example.com",
+ "version":1,
+ "port":6667}
+----
+
+There are two additional ZNodes which appear to be related to Kafka's brokers:
+
+The `/controller` ZNode has JSON data
+
+[source,json]
+----
+{"version":1,
+ "brokerid":169869764,
+ "timestamp":"1428168645849"}
+----
+
+And the `/controller_epoch` has a raw integer value as data, e.g. `15`
+
+=== Topics metadata
+
+Each topic is listed under `/brokers/topics/[\w+]`. The topic node has (by my
+observation) one child node `partitions` which has a child node for each
+partition the cluster has for the given topic, e.g.
+`/brokers/topics/demo-topic/partitions/[1-8]`
+
+Under that partition node is a `state` node which contains the JSON
+representing the current known state of the (topic, partition) tuple. For
+example, the content of `/brokers/topics/demo-topic/partitions/1/state`:
+
+
+[source,json]
+----
+{"controller_epoch":15,
+ "leader":169869489, /* <1> */
+ "version":1,
+ "leader_epoch":59,
+ "isr":[169869764,169869489,169869579] /* <2> */
+ }
+----
+<1> Leader's brokerId
+<2> brokerIds of the other replicas which hold this partition
+
+
+
+=== Consumer metadata
+
+Traditional "high-level" Kafka consumers will store their offset and other
+metadata under `/consumers/[\w+]` (e.g. `/consumers/demo-group`). It has the
+children:
+
+* `ids`
+* `offsets/`
+* `owners/`
+
+Under `offsets` there are the specific offsets for each (topic, partition)
+tuple as a raw integer, e.g. the node
+`/consumers/demo-topic/offsets/topic-name/7` might have the data of `132`
+which means that the offset for the consumer group "demo-topic" on
+"topic-name" partition 7 is: `132`
+
+Under `owners` there is an empty child node for each topic that the group
+subscribes to, e.g. `/consumers/demo-topic/owners/topic-name`
