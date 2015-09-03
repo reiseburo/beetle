@@ -48,10 +48,10 @@ example, the content of `/brokers/topics/demo-topic/partitions/1/state`:
 [source,json]
 ----
 {"controller_epoch":15,
- "leader":169869489, /* <1> */
+ "leader":169869489, // <1>
  "version":1,
  "leader_epoch":59,
- "isr":[169869764,169869489,169869579] /* <2> */
+ "isr":[169869764,169869489,169869579] // <2>
  }
 ----
 <1> Leader's brokerId
