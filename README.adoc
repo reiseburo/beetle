@@ -74,6 +74,7 @@ Brokers.just('localhost:6667')
 
 
 .LowLevelBeetle.java
+[source, java]
 ----
 /*
  * The following is a prototype of some ideas for how the above examples
