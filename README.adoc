@@ -1,5 +1,7 @@
 = Beetle
 
+image:https://travis-ci.org/reiseburo/beetle.svg?branch=master["Build Status", link="https://travis-ci.org/reiseburo/beetle"]
+
 Beetle is a somewhat higher level Java API on top of the client libraries
 distributed distributed with link:http://kafka.apache.org[Apache Kafka]. The
 goal of this library is not to replace the use of those libraries, but to wrap
@@ -50,6 +52,15 @@ LocateBrokers.zookeeper("localhost:2181")
     .map(message -> message.commitOffset());
 ----
 
+
+.ZookeeperlessConsumer.java
+[source, java]
+----
+Broker.just('localhost:6667')
+    .map(broker -> TopicSubscription("some-topic")
+    .consume(m -> doSomethingWithMessage(m))
+    .map(m -> m.commitOffset());
+----
 
 == Similar Projects
 
