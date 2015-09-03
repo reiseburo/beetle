@@ -18,3 +18,33 @@ be as easy as executing:
 
     % ./gradlew
 
+
+== Design/Notes/Thoughts
+
+
+NOTE: Right now this section is very much just a brain-dump/work-in-progress
+
+What is fundamentally missing from the upstream Kafka clients is an evented
+view on the world. Despite Zookeeper and Kafka's models effectively being
+event-driven,
+link:https://cwiki.apache.org/confluence/display/KAFKA/0.8.0+SimpleConsumer+Example[implementing
+a lower-level SimpleConsumer] utilizes busy-loops and rather disjointed logic
+for reconnects and error handling. The link:https://cwiki.apache.org/confluence/display/KAFKA/Consumer+Group+Example[higher-level
+consumer API] is also awkward to use as far as receiving messages (using an
+iterator) and handling parallel operations (stuffing a thread pool somewhere
+for receiving).
+
+A high-level Kafka consumer API maps rather nicely to the
+link:https://github.com/ReactiveX/RxJava[RxJava] usage model of Observers and
+Subscribers, e.g.g
+
+
+.Consumer.java
+[source, java]
+----
+/* Using Java 8 Lambda syntax for conciseness' sake */
+BrokerDiscovery.zookeeper("localhost:2181")
+    .map(broker -> TopicSubscription("some-topic"))
+    .map(message -> doSomethingWithMessage(message); message)
+    .map(message -> message.commitOffset());
+----
