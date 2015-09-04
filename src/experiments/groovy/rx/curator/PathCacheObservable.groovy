@@ -1,9 +1,12 @@
 package rx.curator
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.reiseburo.beetle.Broker
 import com.github.reiseburo.rx.curator.PathChildren
 import org.apache.curator.RetryPolicy
 import org.apache.curator.framework.CuratorFramework
 import org.apache.curator.framework.CuratorFrameworkFactory
+import org.apache.curator.framework.recipes.cache.ChildData
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent
 import org.apache.curator.retry.RetryNTimes
 
@@ -19,14 +22,18 @@ class PathCacheObservable {
 
         boolean waitFor = true
 
-        PathChildren.with(curator).watch('/brokers')
+        PathChildren.with(curator).watch('/brokers/ids')
         .flatMap({ PathChildrenCacheEvent ev ->
             if (ev.type == PathChildrenCacheEvent.Type.CHILD_ADDED) {
                 return Observable.from(ev.data)
             }
         })
-        .subscribe({
-            println "Rec: ${it}"
+        .flatMap({ ChildData data ->
+            Broker broker = Broker.fromJSON(new String(data.data))
+            return Observable.from(broker.inferIdFromPath(data.path))
+        })
+        .subscribe({ Broker b ->
+            println b
             waitFor = false
         })
 

@@ -1,6 +1,9 @@
 package com.github.reiseburo.beetle.internal
 
 import org.apache.curator.framework.CuratorFramework
+import org.apache.curator.framework.CuratorFrameworkFactory
+import org.apache.curator.retry.RetryOneTime
+import org.apache.curator.test.TestingServer
 import spock.lang.*
 
 import rx.Observable
@@ -44,5 +47,30 @@ class BrokersMonitorSpec extends Specification {
 
         then:
         subscriber.assertError(NullPointerException.class)
+    }
+}
+
+class BrokersMonitorIntegrationSpec extends Specification {
+    CuratorFramework curator
+    TestingServer server
+
+    def setup() {
+        server = new TestingServer()
+        curator = CuratorFrameworkFactory.newClient(server.connectString, new RetryOneTime())
+    }
+
+    def cleanup() {
+        curator?.close()
+        server?.close()
+    }
+
+    @Ignore
+    def "foo"() {
+        given: '/brokers/ids exists'
+        final String brokersPath = '/brokers/ids'
+        curator.create().creatingParentsIfNeeded().forPath(brokersPath)
+
+        expect:
+        true
     }
 }

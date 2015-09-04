@@ -33,10 +33,15 @@ dependencies {
 
     compile 'com.github.reiseburo:rx-curator:[0.1.0,1.0)'
 
+    compile 'com.fasterxml.jackson.core:jackson-core:[2.6.1,2.7)'
+    compile 'com.fasterxml.jackson.core:jackson-databind:[2.6.1,2.7)'
+
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
     testCompile 'cglib:cglib-nodep:3.1'
+    testCompile 'org.apache.curator:curator-test:[2.7.1,2.8)'
 
     experimentsCompile 'org.codehaus.groovy:groovy-all:[2.4.4,2.5)'
+    experimentsCompile sourceSets.main.output
 }
 
 idea {
