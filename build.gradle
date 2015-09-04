@@ -18,13 +18,21 @@ repositories {
     jcenter()
 }
 
+configurations {
+    experimentsCompile.extendsFrom compile
+}
+
 dependencies {
-    compile 'org.apache.curator:curator-framework:[2.7.1,2.8)'
+    ['framework', 'recipes'].each {
+        compile "org.apache.curator:curator-${it}:[2.7.1,2.8)"
+    }
     compile 'io.reactivex:rxjava:[1.0.14,2.0)'
     compile 'org.apache.kafka:kafka_2.11:0.8.2.1'
 
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
     testCompile 'cglib:cglib-nodep:3.1'
+
+    experimentsCompile 'org.codehaus.groovy:groovy-all:[2.4.4,2.5)'
 }
 
 idea {
@@ -43,3 +51,20 @@ test {
 
 assemble.dependsOn check
 install.dependsOn assemble
+
+
+sourceSets {
+    experiments {
+        groovy {
+            srcDir "${projectDir}/src/experiments"
+        }
+    }
+}
+
+task runExperiment(type: JavaExec) {
+    description "Run an experiment, must have -PexperimentClass=foo set"
+    dependsOn classes, test
+    main experimentClass
+    classpath sourceSets.main.runtimeClasspath + sourceSets.experiments.runtimeClasspath
+    inputs.source sourceSets.experiments.allSource
+}
