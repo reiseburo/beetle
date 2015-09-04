@@ -16,6 +16,8 @@ defaultTasks 'check', 'assemble'
 
 repositories {
     jcenter()
+    maven { url "https://dl.bintray.com/reiseburo/libs" }
+    mavenLocal()
 }
 
 configurations {
@@ -28,6 +30,8 @@ dependencies {
     }
     compile 'io.reactivex:rxjava:[1.0.14,2.0)'
     compile 'org.apache.kafka:kafka_2.11:0.8.2.1'
+
+    compile 'com.github.reiseburo:rx-curator:[0.1.0,1.0)'
 
     testCompile "org.spockframework:spock-core:1.0-groovy-2.4"
     testCompile 'cglib:cglib-nodep:3.1'
